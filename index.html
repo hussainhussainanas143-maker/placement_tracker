@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trailhead — Placement Readiness Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ONBOARDING -->
+<div id="onboarding" class="onboarding hidden">
+  <div class="onboarding-card">
+    <p class="onboarding-kicker">Before you start the climb</p>
+    <h1>Let's set up your trail.</h1>
+    <p class="onboarding-sub">A few details so Trailhead can build a roadmap around your goal — not a generic one.</p>
+    <form id="onboarding-form">
+      <div class="field-row">
+        <label>Your name
+          <input type="text" name="name" required placeholder="e.g. Ananya Rajan">
+        </label>
+        <label>College / Institution
+          <input type="text" name="college" required placeholder="e.g. SRM Institute of Science and Technology">
+        </label>
+      </div>
+      <div class="field-row">
+        <label>Degree & branch
+          <input type="text" name="branch" required placeholder="e.g. B.Tech CSE">
+        </label>
+        <label>Graduation year
+          <input type="number" name="gradYear" required min="2024" max="2032" placeholder="2027">
+        </label>
+      </div>
+      <div class="field-row">
+        <label>Target role
+          <input type="text" name="targetRole" required placeholder="e.g. Software Development Engineer">
+        </label>
+        <label>Target companies / tier
+          <input type="text" name="targetCompany" placeholder="e.g. Product-based, Tier 1">
+        </label>
+      </div>
+      <label class="field-full">Placement drive / target date
+        <input type="date" name="targetDate" required>
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">Build my roadmap</button>
+    </form>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div id="app" class="app hidden">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 32 32" fill="none"><path d="M4 26 L13 8 L18 18 L22 11 L28 26" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Trailhead</span>
+    </div>
+
+    <nav class="trail-nav" id="trail-nav">
+      <button class="trail-item active" data-view="dashboard"><span class="trail-dot"></span>Dashboard</button>
+      <button class="trail-item" data-view="roadmap"><span class="trail-dot"></span>Roadmap</button>
+      <button class="trail-item" data-view="tasks"><span class="trail-dot"></span>Tasks</button>
+      <button class="trail-item" data-view="skills"><span class="trail-dot"></span>Skill Progress</button>
+      <button class="trail-item" data-view="analytics"><span class="trail-dot"></span>Analytics</button>
+      <button class="trail-item" data-view="achievements"><span class="trail-dot"></span>Achievements</button>
+      <button class="trail-item" data-view="history"><span class="trail-dot"></span>History</button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="profile-btn" id="open-profile">
+        <span class="avatar" id="sidebar-avatar">A</span>
+        <span class="profile-btn-text">
+          <strong id="sidebar-name">—</strong>
+          <small id="sidebar-role">—</small>
+        </span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <h2 id="view-title">Dashboard</h2>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost" id="export-btn">Export progress</button>
+      </div>
+    </header>
+
+    <div class="view-container" id="view-container">
+
+      <!-- DASHBOARD VIEW -->
+      <section id="view-dashboard" class="view">
+        <div class="grid grid-dash">
+
+          <div class="card card-readiness">
+            <div class="readiness-ring-wrap">
+              <svg viewBox="0 0 140 140" class="readiness-ring">
+                <circle cx="70" cy="70" r="60" class="ring-track"/>
+                <circle cx="70" cy="70" r="60" class="ring-fill" id="ring-fill"/>
+              </svg>
+              <div class="readiness-center">
+                <span class="readiness-pct" id="readiness-pct">0%</span>
+                <span class="readiness-label" id="readiness-level">Beginner</span>
+              </div>
+            </div>
+            <div class="readiness-meta">
+              <p class="readiness-heading">Placement readiness</p>
+              <p class="readiness-copy" id="readiness-copy">Complete a few tasks to get your first reading.</p>
+            </div>
+          </div>
+
+          <div class="card card-stats">
+            <div class="stat">
+              <span class="stat-value" id="stat-overall">0%</span>
+              <span class="stat-label">Overall preparation</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value" id="stat-streak">0</span>
+              <span class="stat-label">Day streak</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value" id="stat-completed">0</span>
+              <span class="stat-label">Tasks completed</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value" id="stat-days">0</span>
+              <span class="stat-label">Days until target</span>
+            </div>
+          </div>
+
+          <div class="card card-categories">
+            <h3>Category-wise progress</h3>
+            <div id="category-progress-list" class="category-progress-list"></div>
+          </div>
+
+          <div class="card card-recent">
+            <h3>Recently completed</h3>
+            <ul id="recent-tasks-list" class="simple-list"></ul>
+          </div>
+
+          <div class="card card-milestones">
+            <h3>Upcoming next</h3>
+            <ul id="upcoming-list" class="simple-list"></ul>
+          </div>
+
+          <div class="card card-recs">
+            <h3>Recommended for you</h3>
+            <ul id="recommendations-list" class="rec-list"></ul>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ROADMAP VIEW -->
+      <section id="view-roadmap" class="view hidden">
+        <p class="view-intro">Your preparation path, organized by area. Tackle categories in any order — the sequence within each one is designed to build up.</p>
+        <div id="roadmap-list" class="roadmap-list"></div>
+      </section>
+
+      <!-- TASKS VIEW -->
+      <section id="view-tasks" class="view hidden">
+        <div class="tasks-toolbar">
+          <input type="text" id="task-search" placeholder="Search tasks…" class="input-search">
+          <select id="filter-category" class="input-select"><option value="">All categories</option></select>
+          <select id="filter-status" class="input-select">
+            <option value="">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="ongoing">Ongoing</option>
+            <option value="completed">Completed</option>
+          </select>
+          <select id="filter-priority" class="input-select">
+            <option value="">All priorities</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+          <button class="btn btn-primary" id="add-task-btn">Add task</button>
+        </div>
+        <div id="tasks-table" class="tasks-table"></div>
+      </section>
+
+      <!-- SKILLS VIEW -->
+      <section id="view-skills" class="view hidden">
+        <div class="grid grid-skills">
+          <div class="card">
+            <h3>Skill status by area</h3>
+            <div id="skill-breakdown" class="skill-breakdown"></div>
+          </div>
+          <div class="card">
+            <h3>Skill gaps to close</h3>
+            <p class="view-intro-sm">Areas below 40% complete, worth prioritizing before your target date.</p>
+            <ul id="skill-gap-list" class="simple-list"></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ANALYTICS VIEW -->
+      <section id="view-analytics" class="view hidden">
+        <div class="grid grid-analytics">
+          <div class="card card-wide">
+            <h3>Activity — last 14 days</h3>
+            <div id="activity-chart" class="activity-chart"></div>
+          </div>
+          <div class="card">
+            <h3>Consistency</h3>
+            <div class="consistency-grid">
+              <div class="stat"><span class="stat-value" id="an-current-streak">0</span><span class="stat-label">Current streak</span></div>
+              <div class="stat"><span class="stat-value" id="an-longest-streak">0</span><span class="stat-label">Longest streak</span></div>
+              <div class="stat"><span class="stat-value" id="an-active-days">0</span><span class="stat-label">Active days</span></div>
+              <div class="stat"><span class="stat-value" id="an-avg-day">0</span><span class="stat-label">Avg tasks / active day</span></div>
+            </div>
+          </div>
+          <div class="card card-wide">
+            <h3>Completion by category</h3>
+            <div id="category-bar-chart" class="category-bar-chart"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ACHIEVEMENTS VIEW -->
+      <section id="view-achievements" class="view hidden">
+        <p class="view-intro">Badges unlock automatically as you make progress.</p>
+        <div id="achievements-grid" class="achievements-grid"></div>
+      </section>
+
+      <!-- HISTORY VIEW -->
+      <section id="view-history" class="view hidden">
+        <div class="grid grid-history">
+          <div class="card card-wide">
+            <h3>Readiness over time</h3>
+            <div id="readiness-history-chart" class="activity-chart"></div>
+          </div>
+          <div class="card card-wide">
+            <h3>Completed activity log</h3>
+            <ul id="history-list" class="simple-list history-log"></ul>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- TASK MODAL -->
+<div id="task-modal" class="modal-backdrop hidden">
+  <div class="modal">
+    <h3 id="task-modal-title">Add task</h3>
+    <form id="task-form">
+      <input type="hidden" name="id">
+      <label>Task title
+        <input type="text" name="title" required placeholder="e.g. Solve 10 array problems">
+      </label>
+      <div class="field-row">
+        <label>Category
+          <select name="category" id="task-form-category" required></select>
+        </label>
+        <label>Priority
+          <select name="priority" required>
+            <option value="High">High</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </label>
+      </div>
+      <label>Notes (optional)
+        <textarea name="notes" rows="2" placeholder="Any details worth remembering"></textarea>
+      </label>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="task-modal-cancel">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save task</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div id="profile-modal" class="modal-backdrop hidden">
+  <div class="modal">
+    <h3>Your profile</h3>
+    <form id="profile-form">
+      <div class="field-row">
+        <label>Name<input type="text" name="name" required></label>
+        <label>College<input type="text" name="college" required></label>
+      </div>
+      <div class="field-row">
+        <label>Degree & branch<input type="text" name="branch" required></label>
+        <label>Graduation year<input type="number" name="gradYear" required></label>
+      </div>
+      <div class="field-row">
+        <label>Target role<input type="text" name="targetRole" required></label>
+        <label>Target companies / tier<input type="text" name="targetCompany"></label>
+      </div>
+      <label class="field-full">Placement drive / target date<input type="date" name="targetDate" required></label>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="profile-modal-cancel">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save profile</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ACHIEVEMENT TOAST -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
